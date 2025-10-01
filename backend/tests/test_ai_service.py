@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+<<<<<<< HEAD
 import json
 
 import httpx
 import pytest
 
 from ai.services import AiSuggestionClientError, AiSuggestionError, AiSuggestionService, SeoSuggestion
+=======
+import httpx
+import pytest
+
+from ai.services import AiSuggestionError, AiSuggestionService, SeoSuggestion
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
 
 
 class DummyResponse:
@@ -35,6 +42,7 @@ class DummyClient:
         pass
 
 
+<<<<<<< HEAD
 def _wrap_payload(payload: dict) -> dict:
     return {
         "candidates": [
@@ -62,6 +70,22 @@ def test_generate_seo_suggestions_success():
         ]
     }
     response = DummyResponse(_wrap_payload(response_payload))
+=======
+@pytest.mark.django_db
+def test_generate_seo_suggestions_success():
+    response = DummyResponse(
+        {
+            "suggestions": [
+                {
+                    "heading": "Optimise title",
+                    "description": "Add more keywords",
+                    "keywords": ["ai", "blog"],
+                    "risks": ["Verify statistics"],
+                }
+            ]
+        }
+    )
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
     service = AiSuggestionService(client=DummyClient(response))
     suggestions = service.generate_seo_suggestions(
         title="AI Post",
@@ -86,7 +110,11 @@ def test_generate_seo_suggestions_timeout():
 
 @pytest.mark.django_db
 def test_generate_seo_suggestions_validation_error():
+<<<<<<< HEAD
     response = DummyResponse(_wrap_payload({"unexpected": []}))
+=======
+    response = DummyResponse({"unexpected": []})
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
     service = AiSuggestionService(client=DummyClient(response))
     with pytest.raises(AiSuggestionError):
         service.generate_seo_suggestions(title="A", summary="B", content="C")
@@ -94,6 +122,11 @@ def test_generate_seo_suggestions_validation_error():
 
 @pytest.mark.django_db
 def test_build_payload_requires_fields():
+<<<<<<< HEAD
     service = AiSuggestionService(client=DummyClient(DummyResponse(_wrap_payload({"suggestions": []}))))
     with pytest.raises(AiSuggestionClientError):
+=======
+    service = AiSuggestionService(client=DummyClient(DummyResponse({"suggestions": []})))
+    with pytest.raises(AiSuggestionError):
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
         service.build_payload(title="", summary="", content="")

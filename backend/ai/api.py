@@ -5,7 +5,11 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+<<<<<<< HEAD
 from .services import AiSuggestionClientError, AiSuggestionError, AiSuggestionService
+=======
+from .services import AiSuggestionError, AiSuggestionService
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
 
 
 class SeoSuggestionView(APIView):
@@ -20,10 +24,15 @@ class SeoSuggestionView(APIView):
                 summary=payload.get("summary", ""),
                 content=payload.get("content", ""),
             )
+<<<<<<< HEAD
         except AiSuggestionClientError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         except AiSuggestionError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+=======
+        except AiSuggestionError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
         return Response(
             {
                 "suggestions": [

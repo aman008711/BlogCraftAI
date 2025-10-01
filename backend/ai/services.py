@@ -15,10 +15,13 @@ class AiSuggestionError(RuntimeError):
     """Raised when the AI suggestion provider returns an unexpected result."""
 
 
+<<<<<<< HEAD
 class AiSuggestionClientError(AiSuggestionError):
     """Raised when the request payload is invalid for AI suggestions."""
 
 
+=======
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
 @dataclass(frozen=True)
 class SeoSuggestion:
     heading: str
@@ -62,6 +65,7 @@ class AiSuggestionService:
         self.timeout = timeout or settings.AI_PROVIDER_TIMEOUT
         self._client = client or httpx.Client(timeout=self.timeout)
 
+<<<<<<< HEAD
     def _extract_candidate_text(self, payload: dict) -> str:
         candidates = payload.get("candidates")
         if not candidates:
@@ -95,11 +99,14 @@ class AiSuggestionService:
             return stripped[first:last + 1].strip()
         return stripped
 
+=======
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
     def build_payload(self, *, title: str, summary: str, content: str) -> dict:
         title_value = str(title or "").strip()
         summary_value = str(summary or "").strip()
         content_value = str(content or "").strip()
         if not title_value or not summary_value or not content_value:
+<<<<<<< HEAD
             raise AiSuggestionClientError("Title, summary, and content are required for suggestions.")
 
         prompt = (
@@ -109,10 +116,23 @@ class AiSuggestionService:
         )
         context_blob = json.dumps(
             {
+=======
+            raise AiSuggestionError("Title, summary, and content are required for suggestions.")
+
+        prompt = (
+            "You are an SEO assistant. Provide actionable suggestions for blog optimisation "
+            "including improved headings, meta descriptions, and keywords."
+        )
+
+        return {
+            "prompt": prompt,
+            "context": {
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
                 "title": title_value,
                 "summary": summary_value,
                 "content": content_value,
             },
+<<<<<<< HEAD
             ensure_ascii=False,
         )
         message = f"{prompt}\nInput: {context_blob}"
@@ -128,6 +148,34 @@ class AiSuggestionService:
             ],
             "generationConfig": {
                 "responseMimeType": "application/json",
+=======
+            "response_format": {
+                "type": "object",
+                "properties": {
+                    "suggestions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "heading": {"type": "string"},
+                                "description": {"type": "string"},
+                                "keywords": {
+                                    "type": "array",
+                                    "items": {"type": "string"},
+                                },
+                                "risks": {
+                                    "type": "array",
+                                    "items": {"type": "string"},
+                                },
+                            },
+                            "required": ["heading", "description", "keywords"],
+                            "additionalProperties": False,
+                        },
+                    },
+                },
+                "required": ["suggestions"],
+                "additionalProperties": False,
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
             },
         }
 
@@ -149,11 +197,16 @@ class AiSuggestionService:
             raise AiSuggestionError("Unable to contact the AI provider.") from exc
 
         try:
+<<<<<<< HEAD
             data = response.json()
+=======
+            payload = response.json()
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
         except json.JSONDecodeError as exc:
             logger.error("Invalid JSON from AI provider: %s", exc)
             raise AiSuggestionError("AI provider returned malformed data.") from exc
 
+<<<<<<< HEAD
         candidate_text = self._extract_candidate_text(data)
         normalized_text = self._normalize_model_output(candidate_text)
         try:
@@ -162,6 +215,8 @@ class AiSuggestionService:
             logger.error("Non-JSON AI provider payload: %s", normalized_text)
             raise AiSuggestionError("AI provider returned non-JSON suggestions.") from exc
 
+=======
+>>>>>>> 7ad07fbb72f48a4bb9603622b9ff1ee8bc7dc865
         suggestions_raw = payload.get("suggestions")
         if not isinstance(suggestions_raw, (list, tuple)):
             raise AiSuggestionError("AI provider did not return suggestions.")
